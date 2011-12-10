@@ -6,6 +6,7 @@ class Conflict(db.Model):
     """
     A Burning Wheel scripted conflict
     """
+    ready = db.BooleanProperty(False)
 
 class Exchange(db.Model):
     """

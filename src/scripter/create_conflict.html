@@ -1,0 +1,27 @@
+<html>
+  <head>
+    <title>Burning Wheel Scripting</title>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://raw.github.com/malsup/form/master/jquery.form.js"></script>
+  </head>
+  <body>
+    <div id="char_list">
+      {% for char in conflict.characters %}
+      <div class="character">
+        {% if not char.finalized %}
+        <form class="character_form" action="/character" method="post">
+          Name: <input name="char_name" type="text" value="{{ char.name }}"><br />
+          Pass: <input name="char_pass" type="password"><br/>
+          <input type="hidden" name="character_id" value="{{ char.key }}">
+          <input type="hidden" name="conflict_id" value="{{ conflict.key }}">
+          <input type="submit" value="Finalize Character!">
+        </form>
+        {% else %}
+        <span class="char_name">Character: {{ char.name }}</span>
+        {% endif %}
+      </div>
+      {% endfor %}
+    </div>
+  </body>
+</html>
+<!-- vim: set ts=2 sw=2 et: -->
