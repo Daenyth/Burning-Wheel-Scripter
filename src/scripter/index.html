@@ -4,7 +4,10 @@
   </head>
   <body>
     <p>Every heart has its flame</p>
-    <button id="start_conflict">Start Conflict</button>
+    <form action="/conflict" method="post">
+      <input type="hidden" name="character_count" value="2">
+      <div><input type="submit" value="Start Conflict"></div>
+    </form>
   </body>
 </html>
-<!-- vim: set ts=2 sw=2 et -->
+<!-- vim: set ts=2 sw=2 et: -->
