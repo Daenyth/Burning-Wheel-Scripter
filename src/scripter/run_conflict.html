@@ -1,0 +1,21 @@
+<html>
+  <body>
+    <div id="character_list">
+      {% for char in conflict.characters %}
+      <div class="character">
+        <span class="char_name">Character: {{ char.name }}</span>
+        <span class="char_intent">Intent: {{ char.intent }}</span>
+      </div>
+      {% endfor %}
+
+      <div id="exchange_overview">
+        {% for exchange in conflict.sorted_exchanges %}
+        <div class="exchange">
+          <span>Exchange #{{ exchange.exchange_number }}</span>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+  </body>
+</html>
+<!-- vim: set ts=2 sw=2 et: -->

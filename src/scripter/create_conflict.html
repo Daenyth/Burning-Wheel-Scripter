@@ -12,12 +12,14 @@
         <form class="character_form" action="/character" method="post">
           Name: <input name="char_name" type="text" value="{{ char.name }}"><br />
           Pass: <input name="char_pass" type="password"><br/>
+          Intent: <input name="intent" type="text" value="{{ char.intent }}"><br/>
           <input type="hidden" name="character_id" value="{{ char.key }}">
           <input type="hidden" name="conflict_id" value="{{ conflict.key }}">
           <input type="submit" value="Finalize Character!">
         </form>
         {% else %}
         <span class="char_name">Character: {{ char.name }}</span>
+        <span class="char_intent">Intent: {{ char.intent }}</span>
         {% endif %}
       </div>
       {% endfor %}

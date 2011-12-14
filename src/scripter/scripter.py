@@ -7,7 +7,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
-from conflict import Conflict, Character
+from conflict import Conflict, Character, Exchange
 
 class MainPage(webapp.RequestHandler):
     html_path = os.path.join(os.path.dirname(__file__), 'index.html')
@@ -38,10 +38,9 @@ class ConflictPage(webapp.RequestHandler):
 
     def post(self):
         char_count = int(self.request.get('character_count'))
-        conflict = Conflict()
-        conflict.put()
+        conflict = Conflict.new()
         for i in xrange(char_count):
-            Character(conflict=conflict).put()
+            Character(name="", intent="", conflict=conflict).put()
 
         html_path = os.path.join(os.path.dirname(__file__), 'create_conflict.html')
         template_values = {'conflict': conflict}
@@ -53,6 +52,7 @@ class CharacterPage(webapp.RequestHandler):
         if not char.finalized:
             char.name = self.request.get("char_name")
             char.password = self.request.get("char_password")
+            char.intent = self.request.get("intent")
             char.finalized = True
             char.put()
         self.redirect('/conflict?conflict_id=%s' %
