@@ -2,7 +2,6 @@
   <head>
     <title>Burning Wheel Scripting</title>
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
-    <script type="text/javascript" src="https://raw.github.com/malsup/form/master/jquery.form.js"></script>
   </head>
   <body>
     <div id="char_list">
@@ -14,7 +13,7 @@
           Pass: <input name="char_pass" type="password"><br/>
           Intent: <input name="intent" type="text" value="{{ char.intent }}"><br/>
           <input type="hidden" name="character_id" value="{{ char.key }}">
-          <input type="hidden" name="conflict_id" value="{{ conflict.key }}">
+          <input type="hidden" name="conflict_id" value="{{ conflict.key.id }}">
           <input type="submit" value="Finalize Character!">
         </form>
         {% else %}

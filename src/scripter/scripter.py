@@ -7,7 +7,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
-from conflict import Conflict, Character, Exchange
+from conflict import Conflict, Character
 
 class MainPage(webapp.RequestHandler):
     html_path = os.path.join(os.path.dirname(__file__), 'index.html')
@@ -22,15 +22,17 @@ class ConflictPage(webapp.RequestHandler):
             print "lolfukt"
             return
 
-        conflict = db.get(conflict_id)
+        try:
+            conflict = Conflict.get_by_id(int(conflict_id))
+            if conflict is None:
+                raise RuntimeError("Can't find Conflict")
+        except StandardError:
+            self.error(404)
 
         if all(char.finalized for char in conflict.characters):
             conflict.ready = True
 
-        if conflict.ready:
-            html_page = 'run_conflict.html'
-        else:
-            html_page = 'create_conflict.html'
+        html_page = 'run_conflict.html' if conflict.ready else 'create_conflict.html'
 
         html_path = os.path.join(os.path.dirname(__file__), html_page)
         template_values = {'conflict': conflict}

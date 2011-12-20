@@ -1,5 +1,6 @@
 <html>
   <body>
+    <h3>Conflict #{{ conflict.key.id }}</h2>
     <div id="character_list">
       {% for char in conflict.characters %}
       <div class="character">
@@ -12,6 +13,24 @@
         {% for exchange in conflict.sorted_exchanges %}
         <div class="exchange">
           <span>Exchange #{{ exchange.exchange_number }}</span>
+          <div class="volley_overview">
+            {% for volley in exchange.sorted_volleys %}
+            <div class="volley">
+              <span>Volley #{{ volley.volley_number }}</span>
+              <div class="volley_actions_overview">
+                {% for action_set in volley.sorted_actions %}
+                <div class="volley_action">
+                  {% for char_action in action_set.char_actions %}
+                  <div class="char_action">
+                    <span>{{ char_action.character.name }}: {{ char_action.description }}</span>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+            {% endfor %}
+          </div>
         </div>
         {% endfor %}
       </div>
