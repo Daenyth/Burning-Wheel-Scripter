@@ -21,7 +21,8 @@ class Conflict(db.Model):
         """
         conflict = cls()
         conflict.put()
-        Exchange.new(conflict=conflict, exchange_number=1)
+        Exchange.new(conflict=conflict,
+                     exchange_number=1)
         return conflict
 
     @property
@@ -32,7 +33,9 @@ class Exchange(db.Model):
     """
     One exchange in a scripted conflict
     """
-    conflict = db.ReferenceProperty(Conflict, collection_name="exchanges")
+    conflict = db.ReferenceProperty(Conflict,
+                                    collection_name="exchanges",
+                                    required=True)
     exchange_number = db.IntegerProperty(required=True)
     ready = db.BooleanProperty(False)
 
@@ -41,8 +44,8 @@ class Exchange(db.Model):
         exchange = cls(**kwargs)
         exchange.put()
         for i in xrange(1, 4):
-            volley = Volley(exchange=exchange,
-                            volley_number=i)
+            volley = Volley.new(exchange=exchange,
+                                volley_number=i)
             volley.put()
 
         return exchange
@@ -56,18 +59,34 @@ class Volley(db.Model):
     One volley in an exchange
     """
     volley_number = db.IntegerProperty(required=True)
-    exchange = db.ReferenceProperty(Exchange, collection_name="volleys",
+    exchange = db.ReferenceProperty(Exchange,
+                                    collection_name="volleys",
                                     required=True)
-    # For DoW this is fine, but for Fight! I need to figure out the best way to
-    # handle 3 actions
-    total_actions = db.IntegerProperty(1)
+    # For DoW this is fine, but for Fight it will need to be 3
+    total_actions = db.IntegerProperty(default=1)
     ready = db.BooleanProperty(False)
+
+    @classmethod
+    def new(cls, **kwargs):
+        volley = cls(**kwargs)
+        volley.put()
+        for i in xrange(1, volley.total_actions):
+            volley = VolleyAction(volley=volley,
+                                  action_number=i)
+            volley.put()
+
+        return volley
+
+    @property
+    def sorted_actions(self):
+        return sorted(self.actions, key=lambda v: v.action_number)
 
 class VolleyAction(db.Model):
     """
     One set of actions in a volley
     """
-    volley = db.ReferenceProperty(Volley, collection_name="actions",
+    volley = db.ReferenceProperty(Volley,
+                                  collection_name="actions",
                                   required=True)
     action_number = db.IntegerProperty(required=True)
     ready = db.BooleanProperty(False)
@@ -76,7 +95,9 @@ class Character(db.Model):
     """
     One character involved in a scripted conflict
     """
-    conflict = db.ReferenceProperty(Conflict, collection_name="characters")
+    conflict = db.ReferenceProperty(Conflict,
+                                    collection_name="characters",
+                                    required=True)
     name = db.StringProperty(default='')
     password = db.StringProperty()
     intent = db.TextProperty()
@@ -90,6 +111,6 @@ class CharacterAction(db.Model):
                                          collection_name="char_actions",
                                          required=True)
     character = db.ReferenceProperty(Character, required=True)
-    description = db.TextProperty()
+    description = db.TextProperty(required=True)
     finalized = db.BooleanProperty(False)
 

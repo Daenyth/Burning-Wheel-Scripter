@@ -28,6 +28,7 @@ class ConflictPage(webapp.RequestHandler):
                 raise RuntimeError("Can't find Conflict")
         except StandardError:
             self.error(404)
+            return
 
         if all(char.finalized for char in conflict.characters):
             conflict.ready = True
