@@ -71,9 +71,9 @@ class Volley(db.Model):
         volley = cls(**kwargs)
         volley.put()
         for i in xrange(1, volley.total_actions):
-            volley = VolleyAction(volley=volley,
-                                  action_number=i)
-            volley.put()
+            volley_action = VolleyAction(volley=volley,
+                                         action_number=i)
+            volley_action.put()
 
         return volley
 

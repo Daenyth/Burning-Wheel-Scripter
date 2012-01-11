@@ -1,0 +1,16 @@
+div {
+  border:2px solid #000000;
+  padding:2px;
+  margin-left:auto;
+  margin-right:auto;
+}
+#exchange_overview {
+  clear:both;
+}
+.character {
+  float:left;
+}
+.volley {
+  float:left;
+}
+/* vim: set sw=2 ts=2 et : */

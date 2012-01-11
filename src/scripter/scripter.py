@@ -19,6 +19,7 @@ class ConflictPage(webapp.RequestHandler):
     def get(self):
         conflict_id = self.request.get("conflict_id")
         if not conflict_id:
+            # TODO: Add overview page
             print "lolfukt"
             return
 
@@ -40,6 +41,9 @@ class ConflictPage(webapp.RequestHandler):
         self.response.out.write(template.render(html_path, template_values))
 
     def post(self):
+        """
+        Create a new conflict
+        """
         char_count = int(self.request.get('character_count'))
         conflict = Conflict.new()
         for i in xrange(char_count):

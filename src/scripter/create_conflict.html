@@ -9,7 +9,7 @@
       <div class="character">
         {% if not char.finalized %}
         <form class="character_form" action="/character" method="post">
-          Name: <input name="char_name" type="text" value="{{ char.name }}"><br />
+          Name: <input name="char_name" type="text" value="{{ char.name }}"><br/>
           Pass: <input name="char_pass" type="password"><br/>
           Intent: <input name="intent" type="text" value="{{ char.intent }}"><br/>
           <input type="hidden" name="character_id" value="{{ char.key }}">
