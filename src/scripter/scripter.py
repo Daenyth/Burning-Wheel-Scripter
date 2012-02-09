@@ -87,9 +87,20 @@ class CharacterPage(webapp.RequestHandler):
             char.put()
         self.redirect('/conflict?conflict_id=%s' % conflict_id)
 
+class VolleyPage(webapp.RequestHandler):
+    def post(self):
+        raise NotImplementedError
+
+class CharacterActionPage(webapp.RequestHandler):
+    def post(self):
+        raise NotImplementedError
+
 application = webapp.WSGIApplication([('/', MainPage),
                                       ('/conflict', ConflictPage),
-                                      ('/character', CharacterPage)],
+                                      ('/character', CharacterPage),
+                                      ('/volley', VolleyPage),
+                                      ('/char_action', CharacterActionPage),
+                                     ],
                                      debug=True)
 
 def main():
