@@ -41,8 +41,18 @@ class ConflictPage(webapp.RequestHandler):
 
         html_page = 'run_conflict.html' if conflict.ready else 'create_conflict.html'
 
+        user = users.get_current_user()
+        if user is None:
+            user_char = None
+        else:
+            # May still be none if user is not in this conflict
+            # TODO: Have conflict track their users so it can be validated
+            user_char = Character.gql("WHERE user = :1 AND conflict = :2",
+                                      user, conflict).get()
+
         html_path = os.path.join(os.path.dirname(__file__), html_page)
-        template_values = {'conflict': conflict}
+        template_values = {'conflict': conflict,
+                           'user_char': user_char}
         self.response.out.write(template.render(html_path, template_values))
 
     def post(self):
@@ -89,6 +99,14 @@ class CharacterPage(webapp.RequestHandler):
 
 class VolleyPage(webapp.RequestHandler):
     def post(self):
+        action_name = self.request.get("action_name")
+        description = self.request.get("description")
+        try:
+            volley = db.get(self.request.get("volley_key"))
+        except db.BadKeyError:
+            self.error(500)
+            return
+
         raise NotImplementedError
 
 class CharacterActionPage(webapp.RequestHandler):

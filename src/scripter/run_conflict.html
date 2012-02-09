@@ -22,28 +22,41 @@
               <span>Volley #{{ volley.volley_number }}</span>
               {% if not volley.ready %}
               <div class="volley_actions_overview">
-                {% for action_set in volley.sorted_actions %}
-                <div class="volley_action">
-                  {% if not action_set.char_actions %}
-                  <!-- Add action -->
-                  {% else %}
-                  {% for char_action in action_set.char_actions %}
-                  {% if char_action.finalized %}
-                  <div class="char_action">
-                    <span>{{ char_action.character.name }}: {{ char_action.description }}</span>
-                  </div>
-                  {% else %}
+                {% if not volley.sorted_actions %}
+                  <!-- No volley actions -->
                   <form class="character_action_form" action="/volley" method="post">
                     <label>Action:</label><input name="action_name" type="text" value=""><br/>
                     <label>Description/Intent:</label><input name="description" type="text" value=""><br/>
-                    <input name="action_key" type="hidden" value="{{ char_action.key }}">
+                    <input name="volley_key" type="hidden" value="{{ volley.key }}">
                     <input type="submit" value="Act!">
                   </form>
-                  {% endif %}
+                {% else %}
+                  <!-- has volley actions -->
+                  {% for action_set in volley.sorted_actions %}
+                  <div class="volley_action">
+                    {% if not action_set.char_actions %}
+                      <!-- Add action -->
+                      <form class="character_action_form" action="/volley" method="post">
+                        <label>Action:</label><input name="action_name" type="text" value=""><br/>
+                        <label>Description/Intent:</label><input name="description" type="text" value=""><br/>
+                        <input name="action_key" type="hidden" value="{{ volley_action.key }}">
+                        <input type="submit" value="Act!">
+                      </form>
+                    {% else %}
+                      {% for char_action in action_set.char_actions %}
+                        {% if char_action.finalized %}
+                          <div class="char_action">
+                            <span>{{ char_action.character.name }}: {{ char_action.description }}</span>
+                          </div>
+                        {% else %}
+                          <!-- char action not finalized -->
+                          <p>Gimme final rawr!</p>
+                        {% endif %}
+                      {% endfor %}
+                    {% endif %}
+                  </div>
                   {% endfor %}
-                  {% endif %}
-                </div>
-                {% endfor %}
+                {% endif %}
               </div>
               {% else %}
               <!-- Volley ready -->
