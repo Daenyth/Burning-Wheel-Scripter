@@ -1,7 +1,9 @@
 #!/usr/bin/env python2
 
 import os
+import sys
 
+from google.appengine.api import users
 from google.appengine.ext import db
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
@@ -12,7 +14,10 @@ from conflict import Conflict, Character
 class MainPage(webapp.RequestHandler):
     html_path = os.path.join(os.path.dirname(__file__), 'index.html')
     def get(self):
-        template_values = {}
+        user = users.get_current_user()
+        if not user:
+            self.redirect(users.create_login_url(self.request.uri))
+        template_values = {'user': user}
         self.response.out.write(template.render(self.html_path, template_values))
 
 class ConflictPage(webapp.RequestHandler):
@@ -44,10 +49,12 @@ class ConflictPage(webapp.RequestHandler):
         """
         Create a new conflict
         """
-        char_count = int(self.request.get('character_count'))
+        user = users.get_current_user()
+        if not user:
+            self.redirect(users.create_login_url(self.request.uri))
+
         conflict = Conflict.new()
-        for i in xrange(char_count):
-            Character(name="", intent="", conflict=conflict).put()
+        Character(user=user, conflict=conflict).put()
 
         html_path = os.path.join(os.path.dirname(__file__), 'create_conflict.html')
         template_values = {'conflict': conflict}
@@ -55,15 +62,30 @@ class ConflictPage(webapp.RequestHandler):
 
 class CharacterPage(webapp.RequestHandler):
     def post(self):
-        char = db.get(self.request.get("character_id"))
+        user = users.get_current_user()
+        if not user:
+            self.redirect(users.create_login_url(self.request.uri))
+
+        conflict_id = self.request.get("conflict_id")
+        try:
+            conflict = Conflict.get_by_id(int(conflict_id))
+        except (db.BadKeyError, StandardError) as e:
+            self.error(500)
+            print >>sys.stderr, str(e)
+            return
+
+        char = Character.gql("WHERE user = :1 AND conflict = :2",
+                             user, conflict).get()
+
+        if char is None:
+            char = Character(user=user, conflict=conflict)
+
         if not char.finalized:
             char.name = self.request.get("char_name")
-            char.password = self.request.get("char_password")
             char.intent = self.request.get("intent")
             char.finalized = True
             char.put()
-        self.redirect('/conflict?conflict_id=%s' %
-                      self.request.get("conflict_id"))
+        self.redirect('/conflict?conflict_id=%s' % conflict_id)
 
 application = webapp.WSGIApplication([('/', MainPage),
                                       ('/conflict', ConflictPage),

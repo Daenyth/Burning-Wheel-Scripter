@@ -98,9 +98,9 @@ class Character(db.Model):
     conflict = db.ReferenceProperty(Conflict,
                                     collection_name="characters",
                                     required=True)
+    user = db.UserProperty(required=True)
     name = db.StringProperty(default='')
-    password = db.StringProperty()
-    intent = db.TextProperty()
+    intent = db.TextProperty(default='')
     finalized = db.BooleanProperty(False)
 
 class CharacterAction(db.Model):

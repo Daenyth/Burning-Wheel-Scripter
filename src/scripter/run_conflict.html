@@ -24,6 +24,9 @@
               <div class="volley_actions_overview">
                 {% for action_set in volley.sorted_actions %}
                 <div class="volley_action">
+                  {% if not action_set.char_actions %}
+                  <!-- Add action -->
+                  {% else %}
                   {% for char_action in action_set.char_actions %}
                   {% if char_action.finalized %}
                   <div class="char_action">
@@ -38,6 +41,7 @@
                   </form>
                   {% endif %}
                   {% endfor %}
+                  {% endif %}
                 </div>
                 {% endfor %}
               </div>

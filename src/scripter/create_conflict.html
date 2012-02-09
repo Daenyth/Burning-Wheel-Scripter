@@ -6,22 +6,22 @@
   <body>
     <div id="char_list">
       {% for char in conflict.characters %}
+      <span>Characters:</span>
+      {% if char.finalized %}
       <div class="character">
-        {% if not char.finalized %}
-        <form class="character_form" action="/character" method="post">
-          Name: <input name="char_name" type="text" value="{{ char.name }}"><br/>
-          Pass: <input name="char_pass" type="password"><br/>
-          Intent: <input name="intent" type="text" value="{{ char.intent }}"><br/>
-          <input type="hidden" name="character_id" value="{{ char.key }}">
-          <input type="hidden" name="conflict_id" value="{{ conflict.key.id }}">
-          <input type="submit" value="Finalize Character!">
-        </form>
-        {% else %}
         <span class="char_name">Character: {{ char.name }}</span>
         <span class="char_intent">Intent: {{ char.intent }}</span>
-        {% endif %}
       </div>
+      {% endif %}
       {% endfor %}
+    </div>
+    <div id="add_char">
+      <form class="character_form" action="/character" method="post">
+        Name: <input name="char_name" type="text"><br/>
+        Intent: <input name="intent" type="text"><br/>
+        <input type="hidden" name="conflict_id" value="{{ conflict.key.id }}">
+        <input type="submit" value="Add Character!">
+      </form>
     </div>
   </body>
 </html>
